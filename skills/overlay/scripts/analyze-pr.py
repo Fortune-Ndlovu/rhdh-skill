@@ -505,6 +505,10 @@ def main():
     )
     args = parser.parse_args()
 
+    # Ensure UTF-8 output on Windows (emoji in priority labels)
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     analysis = build_analysis(args.pr_number, args.repo)
 
     if args.json_output:

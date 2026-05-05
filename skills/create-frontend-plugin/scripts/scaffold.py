@@ -378,22 +378,23 @@ def main() -> None:
     except KeyboardInterrupt:
         log("\nInterrupted.")
         sys.exit(130)
-    except Exception as exc:
+    except (OSError, PermissionError) as exc:
         if args.json:
             print(
                 json.dumps(
                     {
                         "success": False,
                         "error": {
-                            "code": "UNEXPECTED_ERROR",
+                            "code": "PATH_ERROR",
                             "message": str(exc),
                         },
                     },
                     indent=2,
                 )
             )
-            sys.exit(EXIT_FAILURE)
-        raise
+        else:
+            log(f"Error: {exc}")
+        sys.exit(EXIT_FAILURE)
 
     if args.json:
         print(json.dumps(result, indent=2))

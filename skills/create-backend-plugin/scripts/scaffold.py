@@ -356,13 +356,23 @@ def main(argv: list[str] | None = None) -> int:
     if not use_json:
         print(f"{_color(BOLD, 'Scaffolding backend plugin for RHDH')} {args.rhdh_version}")
 
-    scaffold(
-        rhdh_version=args.rhdh_version,
-        plugin_id=args.plugin_id,
-        app_path=app_path,
-        create_app_version=create_app_version,
-        use_json=use_json,
-    )
+    try:
+        scaffold(
+            rhdh_version=args.rhdh_version,
+            plugin_id=args.plugin_id,
+            app_path=app_path,
+            create_app_version=create_app_version,
+            use_json=use_json,
+        )
+    except (OSError, PermissionError) as exc:
+        if use_json:
+            _json_error("PATH_ERROR", str(exc))
+        else:
+            print(f"  {_color(RED, '✗')} {exc}", file=sys.stderr)
+        return 1
+    except KeyboardInterrupt:
+        print("\nInterrupted.", file=sys.stderr)
+        return 130
 
     return 0
 
