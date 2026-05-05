@@ -1,5 +1,5 @@
 ---
-name: RHDH Dynamic Plugin Export and Package
+name: export-and-package
 description: This skill should be used when the user asks to "export dynamic plugin", "package plugin as OCI", "create plugin container image", "publish plugin to registry", "build OCI artifact", "package plugin as tgz", "push plugin to quay.io", "create dynamic plugin archive", "bundle multiple plugins", "generate integrity hash", or mentions exporting, packaging, or publishing an existing Backstage plugin for RHDH deployment. This skill handles the export and packaging workflow after a plugin has been implemented.
 ---
 
@@ -32,6 +32,22 @@ Before starting, ensure:
 - For frontend plugins: Has valid Scalprum configuration (auto-generated if not present)
 
 ## Workflow Overview
+
+> **Automation script:** `scripts/export-plugin.py` automates Steps 1-4 below in
+> a single command. Run `python scripts/export-plugin.py --help` for usage, or
+> see examples:
+>
+> ```bash
+> # OCI (default) — build, export, package, push
+> python scripts/export-plugin.py --plugin-dir plugins/my-plugin \
+>   --tag quay.io/ns/my-plugin:v0.1.0 --push --clean
+>
+> # tgz archive with integrity hash
+> python scripts/export-plugin.py --format tgz --clean
+>
+> # JSON output for CI pipelines
+> python scripts/export-plugin.py --tag quay.io/ns/my-plugin:v0.1.0 --json
+> ```
 
 1. **Build Plugin** - Compile TypeScript and verify no errors
 2. **Export as Dynamic Plugin** - Create `dist-dynamic/` with RHDH CLI

@@ -1,5 +1,5 @@
 ---
-name: RHDH Frontend Dynamic Plugin Bootstrap
+name: create-frontend-plugin
 description: This skill should be used when the user asks to "create RHDH frontend plugin", "bootstrap frontend dynamic plugin", "create UI plugin for RHDH", "new frontend plugin for Red Hat Developer Hub", "add entity card to RHDH", "create dynamic route", "add sidebar menu item", "configure mount points", "create theme plugin", or mentions creating frontend components, UI pages, entity cards, or visual customizations for Red Hat Developer Hub or RHDH. This skill is specifically for frontend plugins - for backend plugins, use the separate backend plugin skill.
 ---
 
@@ -41,11 +41,12 @@ Before starting, ensure the following are available:
 
 1. **Determine RHDH Version** - Identify target RHDH version for compatibility
 2. **Create Backstage App** - Scaffold Backstage app with matching version
-3. **Create Frontend Plugin** - Generate new frontend plugin using Backstage CLI
-4. **Implement Plugin Components** - Build React components and exports
-5. **Configure Scalprum** - Set up module federation for dynamic loading
-6. **Export and Package** - Build, export, and package using RHDH CLI (see export-and-package skill)
-7. **Configure Plugin Wiring** - Define routes, mount points, and menu items
+3. **Configure RHDH Themes (Optional)** - Add RHDH theme to Backstage app
+4. **Create Frontend Dynamic Plugin** - Generate new frontend plugin using Backstage CLI
+5. **Apply RHDH Theme Configuration** - Configure RHDH theme in development harness
+6. **Implement Plugin Components** - Build React components and exports
+7. **Export and Package** - Build, export, and package using RHDH CLI (see export-and-package skill)
+8. **Configure Plugin Wiring** - Define routes, mount points, and menu items
 
 ## Step 1: Determine RHDH Version
 
@@ -54,6 +55,21 @@ Check the target RHDH version and find the compatible Backstage version. Consult
 Ask the user which RHDH version they are targeting if not specified.
 
 ## Step 2: Create Backstage Application
+
+> **Automated:** Steps 2 + 4 (and optionally 3) are automated by the scaffold script.
+> Run it from the directory where the app should be created:
+>
+> ```bash
+> python scripts/scaffold.py --rhdh-version 1.9 --plugin-id my-plugin
+> # With RHDH theme:
+> python scripts/scaffold.py --rhdh-version 1.9 --plugin-id my-plugin --with-theme
+> # JSON output:
+> python scripts/scaffold.py --rhdh-version 1.9 --plugin-id my-plugin --json
+> ```
+>
+> See `python scripts/scaffold.py --help` for all options.
+
+### Manual method
 
 Create a new Backstage application in the current directory using the version-appropriate create-app:
 
@@ -68,7 +84,7 @@ After creation, install dependencies:
 yarn install
 ```
 
-## Step 3: Decide if you want to use RHDH themes
+## Step 3: Configure RHDH Themes (Optional)
 
 If you want to use RHDH themes, follow the steps below. If you don't want to use RHDH themes, skip to Step 4.
 
@@ -92,7 +108,11 @@ const app = createApp({
 });
 ```
 
-## Step 3: Create Frontend Plugin
+## Step 4: Create Frontend Dynamic Plugin
+
+> **Automated:** If you used `scripts/scaffold.py` in Step 2, this step was already completed. Skip to Step 5.
+
+### Manual method
 
 Generate a new frontend plugin:
 
@@ -117,7 +137,7 @@ plugins/<plugin-id>/
     └── index.tsx             # Development harness
 ```
 
-## Step 4: If you decided to use RHDH themes, add RHDH Theme to Development Harness
+## Step 5: Apply RHDH Theme Configuration
 
 By default, `yarn start` uses standard Backstage themes. To preview your plugin with RHDH styling during local development, configure the RHDH theme package.
 
@@ -156,7 +176,7 @@ createDevApp()
 
 > **Note:** When deployed to RHDH, the application shell provides theming automatically. This configuration is only needed for local development.
 
-## Step 5: Implement Plugin Components
+## Step 6: Implement Plugin Components
 
 ### Page Component
 
@@ -215,7 +235,7 @@ cd plugins/<plugin-id>
 yarn build
 ```
 
-## Step 6: Export and Package
+## Step 7: Export and Package
 
 Export the plugin as a dynamic plugin and package it for deployment. For detailed export and packaging options, see the **export-and-package** skill.
 
@@ -239,7 +259,7 @@ podman push quay.io/<namespace>/<plugin-name>:v0.1.0
 
 For advanced options (custom Scalprum config, multi-plugin bundles, tgz/npm packaging), consult the **export-and-package** skill.
 
-## Step 7: Configure Plugin Wiring
+## Step 8: Configure Plugin Wiring
 
 Frontend plugins require configuration in `dynamic-plugins.yaml` to define how they integrate with RHDH.
 
@@ -299,6 +319,10 @@ Apply spacing manually to MUI v5 Grid:
 </Grid>
 ```
 
+### Scalprum Name Mismatch
+
+The `scalprum.name` in `package.json` (auto-generated during export) must match the key under `dynamicPlugins.frontend.<key>` in `dynamic-plugins.yaml`. If you customize `scalprum.name`, update the wiring config to match. Default derivation: `@my-org/backstage-plugin-foo` → `my-org.backstage-plugin-foo`.
+
 ## Additional Resources
 
 ### Related Skills
@@ -308,8 +332,8 @@ Apply spacing manually to MUI v5 Grid:
 
 ### Reference Files
 
-- **`references/frontend-wiring.md`** - Complete mount points, routes, bindings
-- **`references/entity-page.md`** - Entity page customization
+- **`../generate-frontend-wiring/references/frontend-wiring.md`** - Complete mount points, routes, bindings
+- **`../generate-frontend-wiring/references/entity-page.md`** - Entity page customization
 
 ### Example Files
 

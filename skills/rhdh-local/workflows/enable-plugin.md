@@ -9,54 +9,75 @@ Read before starting:
 </required_reading>
 
 <process>
-## Step 1: Identify the Plugin
 
-Ask the user which plugin to enable. If unsure, list available plugins:
+> **Note:** This sequence involves multiple API calls to GitHub. If any step fails, check GitHub API rate limits and authentication.
 
-> **Pre-installed vs OCI plugins:** Check the plugin YAML for `extensions.backstage.io/pre-installed: 'true'`.
+## Steps 1–3: Identify Plugin & Fetch Metadata
+
+Ask the user which plugin to enable. Use the `fetch-plugin-metadata.py` script to list plugins and retrieve all metadata in one step:
+
+**List available plugins:**
+
+```bash
+python "$SKILL_DIR/scripts/fetch-plugin-metadata.py" --list
+```
+
+**Fetch full metadata for a plugin (human-readable):**
+
+```bash
+python "$SKILL_DIR/scripts/fetch-plugin-metadata.py" <plugin-name>
+```
+
+**Fetch full metadata as structured JSON:**
+
+```bash
+python "$SKILL_DIR/scripts/fetch-plugin-metadata.py" <plugin-name> --json
+```
+
+The script fetches the plugin definition and all per-package metadata (OCI artifacts, roles, appConfigExamples) automatically. It handles cross-workspace package resolution.
+
+Validate the plugin name exists. If not found (exit code 1), try similar names and ask user to confirm.
+
+> **Pre-installed vs OCI plugins:** Check the output for the pre-installed flag or the `preInstalled` JSON field.
 >
 > - **Pre-installed** — bundled with RHDH, `spec.dynamicArtifact` is a local path like `./dynamic-plugins/dist/...`. No download needed, but may have version-specific issues in a given RHDH build (e.g. `PluginRoot not found`). The `rhdh-local` `CHANGELOG` or known-issues list is the authoritative source.
 > - **OCI** — fetched from `ghcr.io` at startup, always the exact tested version. More reliable for third-party plugins.
+
+From the output, extract:
+
+- `plugin` / `metadata.name` — canonical plugin name
+- `packages` — list of packages with `dynamicArtifact`, `role`, `appConfigExamples`, `partOf`
+- `categories` — plugin category
+
+<details>
+<summary>Manual alternative (curl chain)</summary>
+
+**Step 1 — List plugins:**
 
 ```bash
 curl -s https://api.github.com/repos/redhat-developer/rhdh-plugin-export-overlays/contents/catalog-entities/extensions/plugins \
   | jq -r '.[].name' | sed 's/\.yaml$//'
 ```
 
-Validate the plugin name exists. If not found, try similar names and ask user to confirm.
-
----
-
-## Step 2: Fetch Plugin Definition
+**Step 2 — Fetch plugin definition:**
 
 ```bash
 curl -s https://raw.githubusercontent.com/redhat-developer/rhdh-plugin-export-overlays/main/catalog-entities/extensions/plugins/<plugin-name>.yaml
 ```
 
-Extract:
+Extract: `metadata.name`, `spec.packages`, `spec.categories`
 
-- `metadata.name` — canonical plugin name
-- `spec.packages` — list of package names that make up this plugin
-- `spec.categories` — plugin category
-
----
-
-## Step 3: Fetch Package Metadata
-
-For each package in `spec.packages`:
+**Step 3 — Fetch package metadata** (for each package in `spec.packages`):
 
 ```bash
 curl -s https://raw.githubusercontent.com/redhat-developer/rhdh-plugin-export-overlays/main/workspaces/<plugin-name>/metadata/<package-name>.yaml
 ```
 
-Extract from each:
+Extract: `spec.dynamicArtifact`, `spec.backstage.role`, `spec.appConfigExamples`, `spec.partOf`
 
-- `spec.dynamicArtifact` — the OCI reference to use (e.g. `oci://ghcr.io/...`)
-- `spec.backstage.role` — `frontend-plugin`, `backend-plugin`, or `backend-plugin-module`
-- `spec.appConfigExamples` — example configuration snippets
-- `spec.partOf` — which plugin(s) this package belongs to
+> **Note:** Some packages live in a different workspace. If not found under `<plugin-name>`, try the workspace derived from the package name (e.g. `backstage-plugin-kubernetes-backend` → `workspaces/backstage/`) or the `backstage` workspace as a fallback.
 
-> **Note:** Some packages live in a different workspace. If not found under `<plugin-name>`, try the workspace derived from the package name (e.g. `backstage-plugin-kubernetes-backend` → `workspaces/kubernetes/`).
+</details>
 
 ---
 
