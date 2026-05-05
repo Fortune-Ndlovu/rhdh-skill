@@ -30,9 +30,7 @@ def run_gh(args, check=True):
     """Run a gh CLI command and return parsed JSON output."""
     cmd = ["gh"] + args
     try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, check=check, timeout=30
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, check=check, timeout=30)
         if result.stdout.strip():
             return json.loads(result.stdout)
         return None
@@ -53,9 +51,7 @@ def run_gh_raw(args, check=True):
     """Run a gh CLI command and return raw stdout."""
     cmd = ["gh"] + args
     try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, check=check, timeout=30
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, check=check, timeout=30)
         return result.stdout.strip()
     except subprocess.CalledProcessError as exc:
         print(f"Error running: {' '.join(cmd)}", file=sys.stderr)
@@ -74,18 +70,30 @@ def fetch_pr_context(pr_number, repo):
         "number,title,state,author,labels,assignees,reviewRequests,"
         "reviews,statusCheckRollup,files,updatedAt,createdAt,mergeable,body"
     )
-    return run_gh([
-        "pr", "view", str(pr_number), "--repo", repo,
-        "--json", fields,
-    ])
+    return run_gh(
+        [
+            "pr",
+            "view",
+            str(pr_number),
+            "--repo",
+            repo,
+            "--json",
+            fields,
+        ]
+    )
 
 
 def fetch_codeowners(repo):
     """Fetch CODEOWNERS file content."""
-    result = run_gh_raw([
-        "api", f"repos/{repo}/contents/CODEOWNERS",
-        "--jq", ".content",
-    ], check=False)
+    result = run_gh_raw(
+        [
+            "api",
+            f"repos/{repo}/contents/CODEOWNERS",
+            "--jq",
+            ".content",
+        ],
+        check=False,
+    )
     if result:
         try:
             return base64.b64decode(result).decode("utf-8", errors="replace")
@@ -117,7 +125,7 @@ def classify_priority(labels):
 def extract_workspaces(files):
     """Extract workspace names from changed files."""
     workspaces = set()
-    for f in (files or []):
+    for f in files or []:
         path = f.get("path", "")
         if path.startswith("workspaces/"):
             parts = path.split("/")
@@ -130,9 +138,7 @@ def assess_assignment(pr_data):
     """Assess assignment status."""
     assignees = [a.get("login", "") for a in (pr_data.get("assignees") or [])]
     review_requests = pr_data.get("reviewRequests") or []
-    individual_reviewers = [
-        r.get("login", "") for r in review_requests if r.get("login")
-    ]
+    individual_reviewers = [r.get("login", "") for r in review_requests if r.get("login")]
     team_reviewers = [
         r.get("name", "") for r in review_requests if r.get("name") and not r.get("login")
     ]
@@ -206,11 +212,7 @@ def check_codeowners_modified(files):
 
 def check_source_json_modified(files):
     """Check if any source.json is modified."""
-    return [
-        f.get("path", "")
-        for f in (files or [])
-        if f.get("path", "").endswith("source.json")
-    ]
+    return [f.get("path", "") for f in (files or []) if f.get("path", "").endswith("source.json")]
 
 
 def compute_staleness(updated_at, priority_key):
@@ -244,7 +246,9 @@ def get_approvals(pr_data):
     return approvals
 
 
-def determine_merge_readiness(pr_data, checks, assignment, priority_key, codeowners_modified, is_addition):
+def determine_merge_readiness(
+    pr_data, checks, assignment, priority_key, codeowners_modified, is_addition
+):
     """Determine merge readiness checklist."""
     items = []
 
@@ -260,9 +264,7 @@ def determine_merge_readiness(pr_data, checks, assignment, priority_key, codeown
     # Smoke tests (optional)
     smoke_keys = [k for k in checks if "smoke" in k.lower() or "workspace-test" in k.lower()]
     if smoke_keys:
-        smoke_passed = all(
-            checks[k].get("conclusion", "").lower() == "success" for k in smoke_keys
-        )
+        smoke_passed = all(checks[k].get("conclusion", "").lower() == "success" for k in smoke_keys)
         items.append(("Smoke tests passed", smoke_passed))
 
     # Has individual assignee
@@ -433,7 +435,9 @@ def format_markdown(analysis):
     lines.append("|--------|---------|")
     asgn = a["assignment"]
     lines.append(f"| Assignees | {', '.join('@' + u for u in asgn['assignees']) or '(none)'} |")
-    lines.append(f"| Individual Reviewers | {', '.join('@' + u for u in asgn['individual_reviewers']) or '(none)'} |")
+    lines.append(
+        f"| Individual Reviewers | {', '.join('@' + u for u in asgn['individual_reviewers']) or '(none)'} |"
+    )
     if asgn["team_reviewers"]:
         lines.append(f"| Team Reviewers | {', '.join(asgn['team_reviewers'])} |")
     lines.append(f"| Verdict | {asgn['status']} |")
@@ -448,7 +452,9 @@ def format_markdown(analysis):
             else:
                 lines.append(f"- `{ws}`: ❌ No entry found")
         if a.get("source_json_modified"):
-            lines.append(f"- CODEOWNERS modified in PR: {'✅ Yes' if a['codeowners_modified'] else '❌ No'}")
+            lines.append(
+                f"- CODEOWNERS modified in PR: {'✅ Yes' if a['codeowners_modified'] else '❌ No'}"
+            )
         lines.append("")
 
     # Checks
@@ -485,15 +491,16 @@ def main():
         description="Analyze a single overlay repository PR.",
         epilog="Example: %(prog)s 1234 --json",
     )
+    parser.add_argument("pr_number", type=int, help="PR number to analyze")
     parser.add_argument(
-        "pr_number", type=int, help="PR number to analyze"
-    )
-    parser.add_argument(
-        "--repo", default=DEFAULT_REPO,
+        "--repo",
+        default=DEFAULT_REPO,
         help=f"GitHub repository (default: {DEFAULT_REPO})",
     )
     parser.add_argument(
-        "--json", dest="json_output", action="store_true",
+        "--json",
+        dest="json_output",
+        action="store_true",
         help="Output structured JSON instead of markdown",
     )
     args = parser.parse_args()

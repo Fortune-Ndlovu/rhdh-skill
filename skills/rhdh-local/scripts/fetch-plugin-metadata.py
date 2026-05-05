@@ -24,10 +24,7 @@ _CONTENTS_URL = (
     "https://api.github.com/repos/redhat-developer/rhdh-plugin-export-overlays"
     "/contents/catalog-entities/extensions/plugins"
 )
-_RAW_BASE = (
-    "https://raw.githubusercontent.com/redhat-developer/"
-    "rhdh-plugin-export-overlays/main"
-)
+_RAW_BASE = "https://raw.githubusercontent.com/redhat-developer/rhdh-plugin-export-overlays/main"
 
 # ANSI helpers
 _RED = "\033[0;31m"
@@ -41,6 +38,7 @@ _NC = "\033[0m"
 # ---------------------------------------------------------------------------
 # Minimal YAML parser (stdlib-only)
 # ---------------------------------------------------------------------------
+
 
 def _parse_yaml(text: str) -> dict[str, Any]:
     """Parse the subset of YAML used in plugin-export-overlays files.
@@ -154,7 +152,7 @@ def _parse_mapping(lines: list[str], idx: int, base_indent: int) -> tuple[dict[s
             continue
 
         key = stripped[:colon_pos].strip()
-        after_colon = stripped[colon_pos + 1:].strip()
+        after_colon = stripped[colon_pos + 1 :].strip()
 
         if after_colon and not after_colon.startswith("#"):
             # Inline scalar value
@@ -240,7 +238,7 @@ def _parse_list(lines: list[str], idx: int, base_indent: int) -> tuple[list[Any]
             # Inline mapping item – first key:value is on this line
             colon_pos = item_text.find(":")
             first_key = item_text[:colon_pos].strip()
-            first_val_str = item_text[colon_pos + 1:].strip()
+            first_val_str = item_text[colon_pos + 1 :].strip()
 
             item_dict: dict[str, Any] = {}
 
@@ -292,6 +290,7 @@ def _parse_list(lines: list[str], idx: int, base_indent: int) -> tuple[list[Any]
 # HTTP helpers
 # ---------------------------------------------------------------------------
 
+
 def _fetch(url: str) -> bytes:
     """Fetch *url* and return the response body bytes."""
     req = urllib.request.Request(url, headers={"User-Agent": "rhdh-skill/0.1"})
@@ -310,6 +309,7 @@ def _fetch_yaml(url: str) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Core logic
 # ---------------------------------------------------------------------------
+
 
 def list_plugins() -> list[str]:
     """Return sorted list of available plugin names."""
@@ -374,14 +374,14 @@ def _normalize_pkg_name(name: str) -> str:
         "@red-hat-developer-hub/",
     ):
         if n.startswith(pfx):
-            n = n[len(pfx):]
+            n = n[len(pfx) :]
             break
 
     # Strip vendor insertions (e.g. "redhat-") that appear before
     # the plugin's core name
     for vendor in ("redhat-", "red-hat-"):
         if n.startswith(vendor):
-            n = n[len(vendor):]
+            n = n[len(vendor) :]
             break
 
     return n
@@ -429,9 +429,7 @@ def fetch_plugin_metadata(plugin_name: str) -> dict[str, Any]:
     Returns a structured dict with plugin info and package details.
     """
     # Step 1: plugin definition
-    plugin_url = (
-        f"{_RAW_BASE}/catalog-entities/extensions/plugins/{plugin_name}.yaml"
-    )
+    plugin_url = f"{_RAW_BASE}/catalog-entities/extensions/plugins/{plugin_name}.yaml"
     try:
         plugin_def = _fetch_yaml(plugin_url)
     except urllib.error.HTTPError as exc:
@@ -447,9 +445,11 @@ def fetch_plugin_metadata(plugin_name: str) -> dict[str, Any]:
     annotations = _get(plugin_def, "metadata", "annotations", default={})
     pre_installed = False
     if isinstance(annotations, dict):
-        pre_installed = annotations.get(
-            "extensions.backstage.io/pre-installed", ""
-        ) in ("true", "True", True)
+        pre_installed = annotations.get("extensions.backstage.io/pre-installed", "") in (
+            "true",
+            "True",
+            True,
+        )
 
     # Step 2: per-package metadata
     # Pre-fetch the workspace metadata directory listing for the primary workspace
@@ -480,9 +480,7 @@ def fetch_plugin_metadata(plugin_name: str) -> dict[str, Any]:
 
         if match is not None:
             ws, file_name = match
-            pkg_url = (
-                f"{_RAW_BASE}/workspaces/{ws}/metadata/{file_name}.yaml"
-            )
+            pkg_url = f"{_RAW_BASE}/workspaces/{ws}/metadata/{file_name}.yaml"
             try:
                 pkg_def = _fetch_yaml(pkg_url)
             except urllib.error.HTTPError:
@@ -490,9 +488,7 @@ def fetch_plugin_metadata(plugin_name: str) -> dict[str, Any]:
 
         dynamic_artifact = _get(pkg_def, "spec", "dynamicArtifact", default=None)
         role = _get(pkg_def, "spec", "backstage", "role", default=None)
-        app_config_examples = _get(
-            pkg_def, "spec", "appConfigExamples", default=None
-        )
+        app_config_examples = _get(pkg_def, "spec", "appConfigExamples", default=None)
         part_of = _get(pkg_def, "spec", "partOf", default=None)
 
         pkg_result: dict[str, Any] = {"name": pkg_name}
@@ -532,12 +528,12 @@ def _derive_workspace(package_name: str) -> str | None:
         "janus-idp-backstage-plugin-",
     ):
         if name.startswith(prefix):
-            name = name[len(prefix):]
+            name = name[len(prefix) :]
             break
     # Strip vendor insertions
     for vendor in ("redhat-", "red-hat-"):
         if name.startswith(vendor):
-            name = name[len(vendor):]
+            name = name[len(vendor) :]
             break
     for suffix in ("-backend", "-common", "-react", "-module", "-node"):
         if name.endswith(suffix):
@@ -549,6 +545,7 @@ def _derive_workspace(package_name: str) -> str | None:
 # ---------------------------------------------------------------------------
 # Output helpers
 # ---------------------------------------------------------------------------
+
 
 def _print_human_list(plugins: list[str]) -> None:
     print(f"{_BOLD}Available plugins ({len(plugins)}):{_NC}\n")
@@ -598,6 +595,7 @@ def _print_human_metadata(data: dict[str, Any]) -> None:
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(

@@ -28,9 +28,7 @@ def run_gh(args, check=True):
     """Run a gh CLI command and return parsed JSON output."""
     cmd = ["gh"] + args
     try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, check=check, timeout=60
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, check=check, timeout=60)
         if result.stdout.strip():
             return json.loads(result.stdout)
         return None
@@ -49,11 +47,23 @@ def run_gh(args, check=True):
 
 def fetch_open_prs(repo):
     """Fetch all open PRs with context."""
-    return run_gh([
-        "pr", "list", "--repo", repo, "--state", "open", "--limit", "100",
-        "--json",
-        "number,title,labels,assignees,updatedAt,createdAt,author,reviewRequests",
-    ]) or []
+    return (
+        run_gh(
+            [
+                "pr",
+                "list",
+                "--repo",
+                repo,
+                "--state",
+                "open",
+                "--limit",
+                "100",
+                "--json",
+                "number,title,labels,assignees,updatedAt,createdAt,author,reviewRequests",
+            ]
+        )
+        or []
+    )
 
 
 def classify_priority(labels):
@@ -101,7 +111,9 @@ def assess_assignment(pr):
     assignees = [a.get("login", "") for a in (pr.get("assignees") or []) if a.get("login")]
     review_requests = pr.get("reviewRequests") or []
     individual_reviewers = [r.get("login", "") for r in review_requests if r.get("login")]
-    team_reviewers = [r.get("name", "") for r in review_requests if r.get("name") and not r.get("login")]
+    team_reviewers = [
+        r.get("name", "") for r in review_requests if r.get("name") and not r.get("login")
+    ]
 
     if assignees:
         return ", ".join(f"@{u}" for u in assignees), "✅"
@@ -118,7 +130,7 @@ def extract_workspace_from_title(title):
     lower = title.lower()
     for prefix in ["update ", "add "]:
         if lower.startswith(prefix):
-            rest = title[len(prefix):]
+            rest = title[len(prefix) :]
             # Take first word or up to " workspace"
             idx = rest.lower().find(" workspace")
             if idx > 0:
@@ -224,7 +236,11 @@ def format_markdown(categorized, total, repo):
         lines.append("| PR | Plugin | Days Stale | Assignee | Action |")
         lines.append("|----|--------|------------|----------|--------|")
         for pr in categorized["critical"]:
-            stale_col = f"{pr['stale_icon']} {pr['days_stale']}" if pr["stale_icon"] else str(pr["days_stale"])
+            stale_col = (
+                f"{pr['stale_icon']} {pr['days_stale']}"
+                if pr["stale_icon"]
+                else str(pr["days_stale"])
+            )
             lines.append(
                 f"| #{pr['number']} | {pr['plugin']} | {stale_col} "
                 f"| {pr['assignee_icon']} {pr['assignee_display']} | {pr['action']} |"
@@ -239,7 +255,11 @@ def format_markdown(categorized, total, repo):
         lines.append("| PR | Plugin | Days Stale | Assignee | Action |")
         lines.append("|----|--------|------------|----------|--------|")
         for pr in categorized["medium"]:
-            stale_col = f"{pr['stale_icon']} {pr['days_stale']}" if pr["stale_icon"] else str(pr["days_stale"])
+            stale_col = (
+                f"{pr['stale_icon']} {pr['days_stale']}"
+                if pr["stale_icon"]
+                else str(pr["days_stale"])
+            )
             lines.append(
                 f"| #{pr['number']} | {pr['plugin']} | {stale_col} "
                 f"| {pr['assignee_icon']} {pr['assignee_display']} | {pr['action']} |"
@@ -254,7 +274,11 @@ def format_markdown(categorized, total, repo):
         lines.append("| PR | Plugin | Days Stale | Assignee | Action |")
         lines.append("|----|--------|------------|----------|--------|")
         for pr in categorized["low"]:
-            stale_col = f"{pr['stale_icon']} {pr['days_stale']}" if pr["stale_icon"] else str(pr["days_stale"])
+            stale_col = (
+                f"{pr['stale_icon']} {pr['days_stale']}"
+                if pr["stale_icon"]
+                else str(pr["days_stale"])
+            )
             lines.append(
                 f"| #{pr['number']} | {pr['plugin']} | {stale_col} "
                 f"| {pr['assignee_icon']} {pr['assignee_display']} | {pr['action']} |"
@@ -328,11 +352,14 @@ def main():
         epilog="Example: %(prog)s --json",
     )
     parser.add_argument(
-        "--repo", default=DEFAULT_REPO,
+        "--repo",
+        default=DEFAULT_REPO,
         help=f"GitHub repository (default: {DEFAULT_REPO})",
     )
     parser.add_argument(
-        "--json", dest="json_output", action="store_true",
+        "--json",
+        dest="json_output",
+        action="store_true",
         help="Output structured JSON instead of markdown",
     )
     args = parser.parse_args()

@@ -136,9 +136,7 @@ def check_plugin_exists(app_path: Path, plugin_id: str) -> bool:
 
 def check_app_exists(app_path: Path) -> bool:
     """Check if a Backstage app already exists at path."""
-    return (app_path / "package.json").is_file() and (
-        app_path / "packages" / "app"
-    ).is_dir()
+    return (app_path / "package.json").is_file() and (app_path / "packages" / "app").is_dir()
 
 
 # ---------------------------------------------------------------------------
@@ -300,15 +298,9 @@ def scaffold(args: argparse.Namespace) -> dict:
         log(f"  1. cd {app_path}")
         log(f"  2. Implement components in plugins/{plugin_id}/src/")
         if with_theme:
-            log(
-                f"  3. Configure theme in plugins/{plugin_id}/dev/index.tsx "
-                "(see SKILL.md Step 5)"
-            )
+            log(f"  3. Configure theme in plugins/{plugin_id}/dev/index.tsx (see SKILL.md Step 5)")
         log(f"  {'4' if with_theme else '3'}. yarn build")
-        log(
-            f"  {'5' if with_theme else '4'}. "
-            "npx @red-hat-developer-hub/cli@latest plugin export"
-        )
+        log(f"  {'5' if with_theme else '4'}. npx @red-hat-developer-hub/cli@latest plugin export")
 
     return result
 
@@ -343,10 +335,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--rhdh-version",
         required=True,
         metavar="VERSION",
-        help=(
-            f"Target RHDH version. "
-            f"Known: {', '.join(sorted(VERSION_MAP.keys()))}."
-        ),
+        help=(f"Target RHDH version. Known: {', '.join(sorted(VERSION_MAP.keys()))}."),
     )
     parser.add_argument(
         "--plugin-id",

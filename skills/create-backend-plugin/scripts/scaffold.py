@@ -62,8 +62,7 @@ def validate_plugin_id(value: str) -> str:
     """Validate plugin ID is a lowercase kebab-case identifier."""
     if not PLUGIN_ID_RE.match(value):
         raise argparse.ArgumentTypeError(
-            f"Invalid plugin ID '{value}'. "
-            "Must be lowercase kebab-case (e.g., 'my-plugin')."
+            f"Invalid plugin ID '{value}'. Must be lowercase kebab-case (e.g., 'my-plugin')."
         )
     return value
 
@@ -72,9 +71,7 @@ def validate_rhdh_version(value: str) -> str:
     """Validate RHDH version is in the known map."""
     if value not in RHDH_VERSION_MAP:
         supported = ", ".join(["next", *SUPPORTED_VERSIONS])
-        raise argparse.ArgumentTypeError(
-            f"Unknown RHDH version '{value}'. Supported: {supported}"
-        )
+        raise argparse.ArgumentTypeError(f"Unknown RHDH version '{value}'. Supported: {supported}")
     return value
 
 
@@ -143,9 +140,7 @@ def run_cmd(
 # ─── Output helpers ──────────────────────────────────────────────────────────
 
 
-def _json_error(
-    code: str, message: str, *, detail: str = "", exit_code: int = 1
-) -> None:
+def _json_error(code: str, message: str, *, detail: str = "", exit_code: int = 1) -> None:
     """Print a JSON error and exit."""
     resp: dict = {"success": False, "error": {"code": code, "message": message}}
     if detail:
@@ -211,10 +206,7 @@ def scaffold(
                 str(app_path),
             ],
             stdin_text="backstage\n",
-            description=(
-                f"npx @backstage/create-app@{create_app_version} "
-                f"--path {app_path}"
-            ),
+            description=(f"npx @backstage/create-app@{create_app_version} --path {app_path}"),
             use_json=use_json,
         )
 
@@ -231,10 +223,7 @@ def scaffold(
 
     # ── Step 3: Create backend plugin ────────────────────────────────────
     if not use_json:
-        print(
-            f"\n{_color(BOLD, 'Step 3: Create backend plugin')} "
-            f"(id={plugin_id})"
-        )
+        print(f"\n{_color(BOLD, 'Step 3: Create backend plugin')} (id={plugin_id})")
 
     run_cmd(
         [
@@ -365,10 +354,7 @@ def main(argv: list[str] | None = None) -> int:
     app_path = Path(args.path).resolve()
 
     if not use_json:
-        print(
-            f"{_color(BOLD, 'Scaffolding backend plugin for RHDH')} "
-            f"{args.rhdh_version}"
-        )
+        print(f"{_color(BOLD, 'Scaffolding backend plugin for RHDH')} {args.rhdh_version}")
 
     scaffold(
         rhdh_version=args.rhdh_version,

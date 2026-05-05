@@ -279,10 +279,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--tag",
-        help=(
-            "OCI image tag, e.g. 'quay.io/namespace/plugin:v0.1.0'. "
-            "Required when --format=oci."
-        ),
+        help=("OCI image tag, e.g. 'quay.io/namespace/plugin:v0.1.0'. Required when --format=oci."),
     )
     parser.add_argument(
         "--format",
@@ -423,7 +420,9 @@ def main(argv: list[str] | None = None) -> int:
         if fmt == "oci":
             assert container_tool is not None
             pkg_result = step_package_oci(
-                plugin_dir, tag=tag, container_tool=container_tool  # type: ignore[arg-type]
+                plugin_dir,
+                tag=tag,
+                container_tool=container_tool,  # type: ignore[arg-type]
             )
         elif fmt == "tgz":
             pkg_result = step_package_tgz(plugin_dir)
