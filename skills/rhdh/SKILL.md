@@ -40,8 +40,6 @@ See the `<tracking_system>` section for details.
 - **GitHub:** `references/github-reference.md` — PR queries, CI analysis, `/publish` triggers
 
 Contains critical gotchas (jq escaping, assignee format) that prevent common errors.
-
-**For Jira work**, use the `rhdh-jira` skill directly — it has its own comprehensive references, CLI tooling (`acli`), and REST/GraphQL fallback.
 </principle>
 
 <principle name="understand_rhdh_repos">
