@@ -206,7 +206,7 @@ These apply across all sub-commands:
 2. Resolve sprint (active or previous)
 3. Partition completed vs carried over, compute completion rate
 4. Per-member breakdown, epic progress, demo checklist with naming conventions
-5. Optionally post to Slack
+5. Optionally save as markdown file
 
 ### Release readiness
 

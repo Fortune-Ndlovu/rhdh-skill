@@ -118,9 +118,13 @@ jql: "project in (RHIDP, RHDHPLAN, RHDHSUPP, RHDHBUGS)
 
 Compute this sprint's velocity vs 3-sprint average. Show trend (↑ accelerating / → stable / ↓ decelerating).
 
-### Step 9 — Optional: Post to Slack
+### Step 9 — Save Report
 
-Format as Slack mrkdwn and offer to post to the team channel. Use `slack_conversations_add_message` if Slack MCP is connected. Follow Slack mrkdwn formatting rules: use `*bold*` not `**bold**`, `<url|text>` for links, `<@USERID>` for mentions, and `content_type: text/plain`.
+Offer to save the report as a markdown file:
+
+> "Save report as markdown? [y/N]"
+
+If yes, save to `sprint-report-{team}-{sprint}-{YYYY-MM-DD}.md` in the current working directory. Accept a custom path if the user provides one.
 
 ## Output
 
@@ -197,7 +201,7 @@ Period: {start} – {end}
 | Sprint has 0 issues | "Empty sprint. Was work tracked elsewhere?" |
 | Parent Epic query fails | Skip epic progress for that issue. Note "parent unavailable." |
 | Demo label but no parent Feature | Note "Demo item has no parent Feature — cannot check demo link." |
-| Slack MCP not connected | Skip Slack posting. Suggest copy-paste. |
+| File save fails | Warn. Report was already displayed in terminal. |
 
 ## Caveats
 
