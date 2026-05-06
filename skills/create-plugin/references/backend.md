@@ -57,7 +57,7 @@ plugins/<plugin-id>-backend/
 
 Backend plugins **must** use the new backend system for dynamic plugin compatibility. Export a default using `createBackendPlugin()` or `createBackendModule()`.
 
-### Plugin definition (`src/plugin.ts`):
+### Plugin definition (`src/plugin.ts`)
 
 ```typescript
 import {
@@ -94,7 +94,7 @@ export const myPlugin = createBackendPlugin({
 export default myPlugin;
 ```
 
-### Entry point (`src/index.ts`):
+### Entry point (`src/index.ts`)
 
 ```typescript
 export { default } from './plugin';

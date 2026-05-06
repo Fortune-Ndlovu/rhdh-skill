@@ -1,6 +1,6 @@
 # Scripts Guide
 
-Full guide: https://agentskills.io/skill-creation/using-scripts
+Full guide: <https://agentskills.io/skill-creation/using-scripts>
 
 ## Default to Scripts
 
@@ -9,6 +9,7 @@ Full guide: https://agentskills.io/skill-creation/using-scripts
 A skill that validates input, generates files from templates, and calls APIs should have scripts for all three — the SKILL.md just orchestrates when to call them and handles the decisions between steps.
 
 Keep instructions for:
+
 - Creative or exploratory reasoning
 - Decisions that depend on ambiguous context
 - Explaining tradeoffs to the user
@@ -48,6 +49,7 @@ Skills run on macOS, Windows, and Linux. Write scripts that work on all three:
 - **Line endings**: Use `newline=""` when opening files for CSV/structured output. Don't assume `\n`.
 - **Shell commands**: If a script calls external tools, document the platform differences or use Python stdlib equivalents.
 - **subprocess on Windows**: Tools installed via npm/yarn (e.g., `npx`, `yarn`) are `.cmd` shims on Windows. Use `shell=True` conditionally:
+
   ```python
   subprocess.run(cmd, shell=(sys.platform == "win32"))
   ```

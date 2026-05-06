@@ -326,7 +326,9 @@ def scaffold(args: argparse.Namespace) -> dict:
         log(f"  Steps completed: {', '.join(result['steps_completed'])}")
         log(bold("\nNext steps:"))
         log(f"  1. cd {plugin_path}")
-        log(f"  2. Implement {'plugin logic in src/plugin.ts' if is_backend else 'components in src/'}")
+        log(
+            f"  2. Implement {'plugin logic in src/plugin.ts' if is_backend else 'components in src/'}"
+        )
         if not is_backend and with_theme:
             log("  3. Configure theme in dev/index.tsx")
         log(f"  {'4' if (not is_backend and with_theme) else '3'}. yarn build")

@@ -48,6 +48,7 @@ Choose the architecture:
 | > 2000 | Consider whether consolidation is the right move |
 
 For sub-command routers:
+
 - Each old skill typically becomes one sub-command with its own `references/<command>.md`.
 - Shared setup, prerequisites, and version info go in the SKILL.md body.
 - Deep-dive references from the old skills move to `references/` with their original filenames.

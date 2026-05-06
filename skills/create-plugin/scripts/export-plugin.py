@@ -30,9 +30,8 @@ from typing import Any, Optional
 # ---------------------------------------------------------------------------
 
 # Disable colors if NO_COLOR is set or neither stdout nor stderr is a TTY
-_NO_COLOR = (
-    os.environ.get("NO_COLOR") is not None
-    or not (sys.stdout.isatty() or sys.stderr.isatty())
+_NO_COLOR = os.environ.get("NO_COLOR") is not None or not (
+    sys.stdout.isatty() or sys.stderr.isatty()
 )
 
 RED = "" if _NO_COLOR else "\033[0;31m"

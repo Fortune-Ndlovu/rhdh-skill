@@ -41,19 +41,23 @@ Find and read:
 Analyze plugin source for:
 
 **Routable Extensions** (pages):
+
 - Look for `createRoutableExtension` in `plugin.ts`
 - These become `dynamicRoutes` entries
 
 **Entity Cards/Content**:
+
 - Look for `createComponentExtension` in `plugin.ts`
 - These become `mountPoints` entries
 - Check if they use `useEntity` (entity-scoped)
 
 **API Factories**:
+
 - Look for `createApiFactory` and `createApiRef`
 - These become `apiFactories` entries
 
 **Icons**:
+
 - Look for icon exports (React components returning SVG/Icon)
 - These become `appIcons` entries
 
@@ -91,6 +95,7 @@ dynamicPlugins:
 ### Step 5: Present to User
 
 Show:
+
 1. The YAML configuration block
 2. A table explaining each entry and its source
 3. Notes about optional configurations

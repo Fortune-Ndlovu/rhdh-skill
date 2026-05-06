@@ -202,6 +202,7 @@ Read `references/scripts-guide.md` for the full guide.
 For each piece of the skill's workflow, ask: "Could a script do this?" If yes, write the script.
 
 **Should be scripts:**
+
 - Validation (input format, required fields, schema compliance)
 - File generation from templates
 - Data extraction and transformation
@@ -213,6 +214,7 @@ For each piece of the skill's workflow, ask: "Could a script do this?" If yes, w
 - Cleanup (remove deprecated files after skill updates)
 
 **Should stay as instructions:**
+
 - Deciding between architectural approaches
 - Reviewing code for quality or style
 - Explaining tradeoffs to the user
@@ -220,6 +222,7 @@ For each piece of the skill's workflow, ask: "Could a script do this?" If yes, w
 - Interview/discovery conversations
 
 Key patterns:
+
 - **Python without dependencies**: stdlib only, `argparse` for CLI parsing
 - **Python with dependencies**: PEP 723 inline metadata with `uv run`
 - **All scripts**: Structured output (JSON when piped), clear exit codes, descriptive `--help`
@@ -237,6 +240,7 @@ The SKILL.md references it: "Load context via `python scripts/load_context.py`. 
 Before presenting the final skill, verify against this checklist:
 
 ### Basics
+
 - [ ] `name` is lowercase, hyphens only, max 64 chars
 - [ ] `description` is under 1024 chars and includes trigger phrases
 - [ ] `description` is slightly pushy — covers edge phrasings that should activate the skill
@@ -244,6 +248,7 @@ Before presenting the final skill, verify against this checklist:
 - [ ] Instructions use imperative form
 
 ### Architecture (if applicable)
+
 - [ ] Sub-commands have a router table with clear routing rules
 - [ ] `command-metadata.json` is the single source of truth for command descriptions
 - [ ] Setup gates are defined with fail actions for each gate
@@ -251,6 +256,7 @@ Before presenting the final skill, verify against this checklist:
 - [ ] Capability-gated steps degrade gracefully with one-line skip reasons
 
 ### References
+
 - [ ] Domain knowledge split into `references/` with clear "when to read" pointers
 - [ ] Each reference is self-contained — no transitive loading (see `spec-guide.md` → Reference Architecture)
 - [ ] Reference loading is conditional, not eager ("Read X if Y happens")
@@ -260,12 +266,14 @@ Before presenting the final skill, verify against this checklist:
 - [ ] No browser-only tools referenced (Postman, API consoles, OAuth login pages)
 
 ### Scripts
+
 - [ ] Scripts (if any) have shebangs, structured output, and `--help`
 - [ ] Context loader returns JSON, handles missing files, resolves fallback paths
 - [ ] Scripts are cross-platform (pathlib, tempfile, no hardcoded paths)
 - [ ] Scripts are idempotent — safe to re-run
 
 ### API/Service Skills (if applicable)
+
 - [ ] Credential files are never read into context — passed via shell substitution only
 - [ ] Credential setup is single-sourced in its own reference file
 - [ ] Capability gate checks for credentials before attempting API calls
@@ -274,6 +282,7 @@ Before presenting the final skill, verify against this checklist:
 - [ ] Instance-specific values include programmatic discovery methods
 
 ### Consolidation (if merging existing skills)
+
 - [ ] No references to old skill names anywhere in the project (`grep -rn` the entire repo)
 - [ ] Router intake menus are sequentially numbered (no gaps from removed items)
 - [ ] Script docstrings and `--help` text reference the new skill name, not the old ones
@@ -284,6 +293,7 @@ Before presenting the final skill, verify against this checklist:
 - [ ] New description covers all trigger phrases from all old skills' descriptions
 
 ### Quality
+
 - [ ] No time-sensitive information (URLs to specific versions, dates that will go stale)
 - [ ] Examples use fake data where possible (emails, names, tokens) — see `spec-guide.md` → Fake Data in Examples
 - [ ] Consistent terminology throughout
