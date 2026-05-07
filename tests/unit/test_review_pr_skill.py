@@ -88,9 +88,7 @@ class TestReviewPrWorkflows:
 
     def test_workflow_exists(self, review_pr_skill_dir):
         """review-operator-pr.md must exist."""
-        assert (
-            review_pr_skill_dir / "workflows" / "review-operator-pr.md"
-        ).exists()
+        assert (review_pr_skill_dir / "workflows" / "review-operator-pr.md").exists()
 
     def test_workflow_has_required_reading_or_prerequisites(self, workflow_file):
         """Workflow must have required_reading or prerequisites section."""
@@ -140,9 +138,7 @@ class TestReviewPrReferences:
 
     def test_reference_exists(self, review_pr_skill_dir):
         """operator-pr-images.md must exist."""
-        assert (
-            review_pr_skill_dir / "references" / "operator-pr-images.md"
-        ).exists()
+        assert (review_pr_skill_dir / "references" / "operator-pr-images.md").exists()
 
     def test_reference_has_xml_sections(self, reference_file):
         """Reference file should use XML tags for structure."""
