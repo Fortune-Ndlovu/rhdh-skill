@@ -1,54 +1,34 @@
 # Reference: rhdh-operator PR Container Images
 
-<image_naming>
+How to find and validate CI-built images for operator PRs. The CI workflow definition lives in the rhdh-operator repo at `.github/workflows/pr-container-build.yaml` — read it for the authoritative build behavior.
 
-## Image Naming Convention
+<what_to_know>
 
-The CI workflow `.github/workflows/pr-container-build.yaml` builds three images per PR:
+## Key Facts
 
-| Image | Registry | Purpose |
-|-------|----------|---------|
-| Operator | `quay.io/rhdh-community/operator` | The operator binary |
-| Bundle | `quay.io/rhdh-community/operator-bundle` | OLM bundle metadata |
-| Catalog | `quay.io/rhdh-community/operator-catalog` | OLM catalog index |
+- CI builds three images per PR: `operator`, `operator-bundle`, `operator-catalog`
+- Registry: `quay.io/rhdh-community/`
+- Tag format includes PR number + commit SHA (only CI knows the exact tag — never construct manually)
+- Images expire after 14 days (`quay.expires-after=14d` label)
 
-**Tag format:** `VERSION-pr-PR_NUMBER-SHORT_SHA`
-
-Example for PR #2756 at commit `6926c0b` with Makefile `VERSION=0.10.0`:
-
-```
-quay.io/rhdh-community/operator:0.10.0-pr-2756-6926c0b
-quay.io/rhdh-community/operator-bundle:0.10.0-pr-2756-6926c0b
-quay.io/rhdh-community/operator-catalog:0.10.0-pr-2756-6926c0b
-```
-
-A short tag (without commit SHA) is also pushed: `0.10.0-pr-2756`
-
-</image_naming>
-
-<expiry>
-
-## Image Expiry
-
-PR images are labeled with `quay.expires-after=14d` and automatically deleted from Quay after 14 days. If images have expired, the PR author needs to push a new commit to trigger a fresh build.
-
-</expiry>
+</what_to_know>
 
 <extracting_from_pr>
 
-## Extracting Image URLs from PR Comments
+## Finding Image URLs
 
-The CI workflow posts a comment on the PR with built image URLs. Extract them with:
+CI posts a comment on the PR with built image URLs. Extract the latest one:
 
 ```bash
 REPO="redhat-developer/rhdh-operator"
 PR_NUMBER=<number>
 
 gh pr view $PR_NUMBER --repo $REPO --json comments \
-  --jq '.comments[] | select(.body | test("quay.io/rhdh-community/operator:")) | .body'
+  --jq '.comments[] | select(.body | test("quay.io/rhdh-community/operator:")) | .body' \
+  | tail -1
 ```
 
-If no comment is found, check whether the CI workflow is still running:
+**If no comment found**, the CI workflow may not have run yet. Check status:
 
 ```bash
 BRANCH=$(gh pr view $PR_NUMBER --repo $REPO --json headRefName --jq '.headRefName')
@@ -56,9 +36,9 @@ gh run list --repo $REPO --branch $BRANCH --workflow pr-container-build.yaml --l
   --json status,conclusion
 ```
 
-- `status: in_progress` — workflow still running, wait for it
-- `conclusion: failure` — build failed, check workflow logs
-- No runs found — CI may not have been triggered (draft PR, docs-only change, or external contributor awaiting approval)
+- `in_progress` — wait for it to finish
+- `failure` — build failed, check workflow logs
+- No runs — CI may not have triggered (draft PR, docs-only change, external contributor)
 
 </extracting_from_pr>
 
@@ -66,18 +46,11 @@ gh run list --repo $REPO --branch $BRANCH --workflow pr-container-build.yaml --l
 
 ## Validating Images Exist
 
-Use skopeo or podman to check if an image exists in the registry:
-
 ```bash
 skopeo inspect docker://quay.io/rhdh-community/operator:TAG --raw 2>/dev/null \
   && echo "Image exists" || echo "Image not found or expired"
 ```
 
-If skopeo is not available, use podman:
-
-```bash
-podman pull --quiet quay.io/rhdh-community/operator:TAG 2>/dev/null \
-  && echo "Image exists" || echo "Image not found or expired"
-```
+If expired (14-day TTL), the PR author needs to push a new commit to retrigger CI.
 
 </validation>

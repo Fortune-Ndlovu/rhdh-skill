@@ -80,6 +80,18 @@ Reference of all RHDH-related repositories, what each one is used for, and how t
   - **Branching:** `main` for active development; `release-1.x` for maintained releases; `gh-pages` for published chart index.
 - **Key paths:** `charts/backstage/` (primary chart), `charts/backstage/values.yaml` (main values), `charts/backstage/templates/` (custom templates)
 
+### rhdh-test-instance
+
+- **Upstream:** <https://github.com/redhat-developer/rhdh-test-instance>
+- **Description:** Automated test environment provisioner for RHDH. Provides Makefile targets and deployment scripts for standing up RHDH instances on OpenShift clusters via either operator or Helm chart. Also integrates with Prow CI to provision ephemeral clusters via PR slash commands.
+- **Tech stack:** Bash, Make, OpenShift CLI, Helm, Prow CI
+- **Key concepts:**
+  - **Prow CI provisioning:** Comment `/test deploy operator 1.9 4h` or `/test deploy helm 1.9 4h` on a PR to have Prow provision an ephemeral OpenShift cluster with RHDH deployed, Keycloak configured, and credentials posted back to the PR. Duration is the cluster TTL.
+  - **Makefile targets:** `make install-operator VERSION=1.9` (install operator CRD + controller), `make deploy-operator VERSION=1.9` (deploy Backstage CR), `make deploy-helm VERSION=1.9` (deploy via Helm chart), `make undeploy-*` (teardown).
+  - **deploy.sh:** Core deployment script supporting `operator` and `helm` modes. Handles Keycloak deployment, app-config generation, dynamic plugins configuration, and cluster router detection.
+  - **Environment configuration:** `.env` file for secrets (Keycloak credentials, GitHub tokens). `config/` directory for app-config and dynamic plugin YAML.
+- **Key paths:** `deploy.sh` (main deployment script), `Makefile` (convenience targets), `helm/deploy.sh` (Helm-specific logic), `config/` (app-config and plugin configuration), `.env.example` (environment template)
+
 ### rhdh-plugin-export-overlays
 
 - **Upstream:** <https://github.com/redhat-developer/rhdh-plugin-export-overlays>
@@ -182,6 +194,7 @@ rhdh (enterprise distribution, github.com)
     |   +-- rhdh-chart (Helm chart)
     |
     +-- rhdh-local (local dev/test environment)
+    +-- rhdh-test-instance (automated test environment provisioning)
     +-- rhdh-dynamic-plugin-factory (container for local plugin building)
 ```
 
