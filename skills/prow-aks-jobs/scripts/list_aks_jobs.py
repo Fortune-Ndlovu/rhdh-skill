@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
-from list_k8s_test_configs import main
+from rhdh_prow.k8s_configs import main
 
 if __name__ == "__main__":
     sys.argv = [sys.argv[0], "--pattern", "^e2e-aks-", *sys.argv[1:]]

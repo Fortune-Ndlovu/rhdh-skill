@@ -21,8 +21,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
-from fetch_yaml import print_configured_versions
-from resolve_repo import resolve_repo_root
+from rhdh_prow.repo import resolve_repo_root
+from rhdh_prow.yaml import print_configured_versions
 
 EKS_DOCS_URL = (
     "https://raw.githubusercontent.com/awsdocs/amazon-eks-user-guide"

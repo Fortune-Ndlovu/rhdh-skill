@@ -23,8 +23,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
-from ocp_lifecycle import classify_ocp_versions
-from rhdh_lifecycle import fetch_lifecycle_api, parse_rhdh_versions, rhdh_supported_ocp_versions
+from rhdh_lifecycle.ocp import classify_ocp_versions
+from rhdh_lifecycle.rhdh import (
+    fetch_lifecycle_api,
+    parse_rhdh_versions,
+    rhdh_supported_ocp_versions,
+)
 
 
 def main(argv=None):

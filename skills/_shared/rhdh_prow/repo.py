@@ -8,7 +8,7 @@ Resolution order:
   4. Fall back to REMOTE mode (GitHub API via gh CLI)
 
 Usage (in consuming scripts):
-    from resolve_repo import resolve_repo_root
+    from rhdh_prow.repo import resolve_repo_root
     root, is_remote = resolve_repo_root()
 """
 

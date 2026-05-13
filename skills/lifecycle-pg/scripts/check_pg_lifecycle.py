@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
-from pg_lifecycle import fetch_pg_lifecycle
+from rhdh_lifecycle.pg import fetch_pg_lifecycle
 
 
 def main(argv=None):

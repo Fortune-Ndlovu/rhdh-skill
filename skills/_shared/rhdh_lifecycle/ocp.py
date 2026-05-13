@@ -4,21 +4,16 @@
 Classifies OCP versions from the Red Hat Product Life Cycles API into
 lifecycle phases (Full Support, Maintenance, EUS, End of life).
 
-This module is the single source of truth for OCP phase classification.
-It is used by:
-  - lifecycle-ocp/scripts/check_ocp_lifecycle.py
-  - prow-ocp-coverage/scripts/analyze_coverage.py
-
 Usage:
-    from ocp_lifecycle import classify_ocp_versions
-    from redhat_lifecycle import fetch_api
+    from rhdh_lifecycle.ocp import classify_ocp_versions
+    from rhdh_lifecycle.redhat import fetch_api
     api_data = fetch_api("Red Hat OpenShift Container Platform")
     versions = classify_ocp_versions(api_data, "2025-05-13")
 """
 
 import re
 
-from redhat_lifecycle import _is_date, _to_date
+from rhdh_lifecycle.redhat import _is_date, _to_date
 
 
 def classify_ocp_versions(api_data, today):

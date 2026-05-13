@@ -6,7 +6,7 @@ and returns a consistent structure. Product-specific post-processing functions
 handle cases like RHBK major version grouping or RHDH OCP compatibility.
 
 Usage:
-    from redhat_lifecycle import fetch_product_lifecycle
+    from rhdh_lifecycle.redhat import fetch_product_lifecycle
 
     versions = fetch_product_lifecycle("rhbk")
     versions = fetch_product_lifecycle("Red Hat Quay")

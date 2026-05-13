@@ -10,10 +10,7 @@ helper functions for listing files, reading YAML, and extracting
 configured K8s versions from CI config files.
 
 Usage as a library (imported by other scripts):
-    import sys
-    from pathlib import Path
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from fetch_yaml import list_yaml_files, fetch_yaml, extract_branch
+    from rhdh_prow.yaml import list_yaml_files, fetch_yaml, extract_branch
 """
 
 from __future__ import annotations
@@ -25,8 +22,9 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from resolve_repo import GITHUB_REPO
 from ruamel.yaml import YAML
+
+from rhdh_prow.repo import GITHUB_REPO
 
 _yaml = YAML()
 _yaml.preserve_quotes = True

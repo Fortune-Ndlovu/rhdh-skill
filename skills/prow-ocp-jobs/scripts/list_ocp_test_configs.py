@@ -17,8 +17,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
-from fetch_yaml import extract_branch, fetch_yaml, list_yaml_files
-from resolve_repo import resolve_repo_root
+from rhdh_prow.repo import resolve_repo_root
+from rhdh_prow.yaml import extract_branch, fetch_yaml, list_yaml_files
 
 CONFIG_DIR = "ci-operator/config/redhat-developer/rhdh"
 PREFIX = "redhat-developer-rhdh-"
