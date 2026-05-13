@@ -12,6 +12,7 @@ Cross-reference RHDH cluster pools, CI test configurations, RHDH lifecycle data,
 ## When to Use
 
 Use this skill when you need to:
+
 - Check if RHDH CI coverage matches the current RHDH-supported OCP versions
 - Find OCP versions that RHDH no longer supports but still have active pools or test entries
 - Find RHDH-supported OCP versions missing cluster pools or test entries
@@ -19,13 +20,14 @@ Use this skill when you need to:
 
 ## Prerequisites
 
-- `curl`, `jq`, and `yq` (v4+) must be available
+- Python 3.9+
 - Internet connectivity to reach `https://access.redhat.com`
 - Works from any directory (auto-detects local `openshift/release` checkout or uses GitHub API)
 
 ## Composed Skills
 
 This skill composes data from:
+
 - **`lifecycle-ocp`**: RHDH and OCP version lifecycle data (via shared `ocp-lifecycle.jq`)
 - **`prow-ocp-pools`**: Cluster pool configurations
 - **`prow-ocp-jobs`**: CI test entry configurations
@@ -35,13 +37,13 @@ This skill composes data from:
 Run the bundled analysis script:
 
 ```bash
-bash "${SKILL_DIR}/scripts/analyze-coverage.sh"
+uv run "${SKILL_DIR}/scripts/analyze_coverage.py"
 ```
 
 ### Override repo location
 
 ```bash
-bash "${SKILL_DIR}/scripts/analyze-coverage.sh" --repo-dir /path/to/openshift/release
+uv run "${SKILL_DIR}/scripts/analyze_coverage.py" --repo-dir /path/to/openshift/release
 ```
 
 ## Two Dimensions of Support
@@ -54,6 +56,7 @@ The analysis checks two independent dimensions for each OCP version:
 | **RHDH supported** | RHDH lifecycle API (`openshift_compatibility` field) | RHDH officially supports running on this OCP version |
 
 An OCP version must satisfy **both** to warrant a cluster pool and test entry:
+
 - An OCP-EOL version should always be removed (regardless of RHDH compatibility)
 - An OCP-supported but non-RHDH-supported version should be reviewed
 

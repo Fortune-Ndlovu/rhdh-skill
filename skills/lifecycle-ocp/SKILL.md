@@ -8,6 +8,7 @@ description: >-
 # Check RHDH and OCP Lifecycle Status
 
 Query the Red Hat Product Life Cycles API to determine:
+
 - Which RHDH releases are currently supported (Full Support or Maintenance)
 - Which OCP versions each active RHDH release supports
 - Which OCP versions are still supported upstream (including EUS phases)
@@ -15,6 +16,7 @@ Query the Red Hat Product Life Cycles API to determine:
 ## When to Use
 
 Use this skill when you need to check version support status before:
+
 - Adding or removing RHDH cluster pools
 - Adding or removing OCP-versioned CI test entries
 - Planning RHDH release branch OCP coverage
@@ -22,7 +24,7 @@ Use this skill when you need to check version support status before:
 
 ## Prerequisites
 
-- `curl` and `jq` must be available
+- Python 3.9+
 - Internet connectivity to reach `https://access.redhat.com`
 
 ## Usage
@@ -30,25 +32,25 @@ Use this skill when you need to check version support status before:
 Run the bundled script:
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-ocp-lifecycle.sh"
+python "${SKILL_DIR}/scripts/check_ocp_lifecycle.py"
 ```
 
 ### Check a specific OCP version
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-ocp-lifecycle.sh" --version 4.16
+python "${SKILL_DIR}/scripts/check_ocp_lifecycle.py" --version 4.16
 ```
 
 ### Check a specific RHDH version
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-ocp-lifecycle.sh" --rhdh-version 1.9
+python "${SKILL_DIR}/scripts/check_ocp_lifecycle.py" --rhdh-version 1.9
 ```
 
 ### Show only RHDH lifecycle (skip OCP table)
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-ocp-lifecycle.sh" --rhdh-only
+python "${SKILL_DIR}/scripts/check_ocp_lifecycle.py" --rhdh-only
 ```
 
 ## Output
@@ -68,6 +70,7 @@ Shows each RHDH release with:
 | SUPPORTED_OCP_VERSIONS | OCP versions this RHDH release officially supports |
 
 After the table, a summary shows:
+
 - The union of OCP versions supported across all active RHDH releases
 - Per-release OCP support breakdown
 
@@ -89,6 +92,7 @@ The **RHDH_SUPP** column is the key indicator for CI coverage decisions. An OCP 
 ### JSON Summary (stderr)
 
 A JSON object is written to stderr with:
+
 - `rhdh_supported_versions`: Array of active RHDH releases with their OCP compatibility
 - `ocp_versions_supported_by_rhdh`: Deduplicated array of OCP versions supported by any active RHDH release
 

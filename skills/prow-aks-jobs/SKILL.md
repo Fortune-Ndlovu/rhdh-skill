@@ -19,26 +19,26 @@ List AKS test entries and update the K8s version used by AKS MAPT clusters.
 
 ## Prerequisites
 
-- `yq` (v4+) for listing tests
+- Python 3.9+
 - Works from any directory (auto-detects local checkout or uses GitHub API)
 - For updating versions: requires a local `openshift/release` checkout
 
 ## Listing Tests
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-aks-jobs.sh"
+uv run "${SKILL_DIR}/scripts/list_aks_jobs.py"
 ```
 
 ### Filter by branch
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-aks-jobs.sh" --branch main
+uv run "${SKILL_DIR}/scripts/list_aks_jobs.py" --branch main
 ```
 
 ### Override repo location
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-aks-jobs.sh" --repo-dir /path/to/openshift/release
+uv run "${SKILL_DIR}/scripts/list_aks_jobs.py" --repo-dir /path/to/openshift/release
 ```
 
 ## Updating the Version (requires local checkout)

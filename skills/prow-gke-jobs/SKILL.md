@@ -20,25 +20,25 @@ a pre-existing static cluster. Version upgrades are performed via the GCP Consol
 
 ## Prerequisites
 
-- `yq` (v4+) for listing tests
+- Python 3.9+
 - Works from any directory (auto-detects local checkout or uses GitHub API)
 
 ## Listing Tests
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-gke-jobs.sh"
+uv run "${SKILL_DIR}/scripts/list_gke_jobs.py"
 ```
 
 ### Filter by branch
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-gke-jobs.sh" --branch main
+uv run "${SKILL_DIR}/scripts/list_gke_jobs.py" --branch main
 ```
 
 ### Override repo location
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-gke-jobs.sh" --repo-dir /path/to/openshift/release
+uv run "${SKILL_DIR}/scripts/list_gke_jobs.py" --repo-dir /path/to/openshift/release
 ```
 
 ## Cluster Version Management

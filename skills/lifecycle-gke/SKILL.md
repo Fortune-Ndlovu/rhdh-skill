@@ -19,17 +19,18 @@ GKE uses a pre-existing long-running cluster. The K8s version is NOT in CI confi
 
 ## Prerequisites
 
-- `curl`, `jq`, internet connectivity
+- Python 3.9+, internet connectivity
 
 ## Steps
 
 1. Run the lifecycle check script:
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-gke-lifecycle.sh"
+python "${SKILL_DIR}/scripts/check_gke_lifecycle.py"
 ```
 
 The script queries:
+
 - **Primary**: `https://endoflife.date/api/google-kubernetes-engine.json` -- auto-scraped from Google's GKE release schedule page, shows standard/maintenance support status and EOL dates
 
 2. If the API call fails, fall back to the vendor docs:

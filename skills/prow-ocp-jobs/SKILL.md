@@ -12,6 +12,7 @@ Manage OCP-specific test entries in RHDH ci-operator configuration files. This s
 ## When to Use
 
 Use this skill when you need to:
+
 - List which OCP versions have helm-nightly test entries per RHDH release branch
 - Add a new OCP version test entry to a config file
 - Remove an end-of-life OCP version test entry from a config file
@@ -19,7 +20,7 @@ Use this skill when you need to:
 
 ## Prerequisites
 
-- `yq` (v4+) must be available for YAML parsing
+- Python 3.9+
 - For listing: works from any directory (auto-detects local checkout or uses GitHub API)
 - For generating/adding/removing: requires a local `openshift/release` checkout
 
@@ -38,19 +39,19 @@ Use this skill when you need to:
 Run the bundled script (works from any directory):
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-ocp-test-configs.sh"
+uv run "${SKILL_DIR}/scripts/list_ocp_test_configs.py"
 ```
 
 ### Filter by product branch
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-ocp-test-configs.sh" --branch main
+uv run "${SKILL_DIR}/scripts/list_ocp_test_configs.py" --branch main
 ```
 
 ### Override repo location
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-ocp-test-configs.sh" --repo-dir /path/to/openshift/release
+uv run "${SKILL_DIR}/scripts/list_ocp_test_configs.py" --repo-dir /path/to/openshift/release
 ```
 
 ### Output format
@@ -72,13 +73,13 @@ e2e-ocp-v4-19-helm-nightly                     4.19          0 5 * * TUE,THU,SAT
 Use the bundled script to generate a new test entry YAML block:
 
 ```bash
-bash "${SKILL_DIR}/scripts/generate-test-entry.sh" --version 4.22 --branch main
+uv run "${SKILL_DIR}/scripts/generate_test_entry.py" --version 4.22 --branch main
 ```
 
 ### With a specific reference version
 
 ```bash
-bash "${SKILL_DIR}/scripts/generate-test-entry.sh" --version 4.22 --branch main --reference 4.21
+uv run "${SKILL_DIR}/scripts/generate_test_entry.py" --version 4.22 --branch main --reference 4.21
 ```
 
 The script outputs a ready-to-insert YAML block based on an existing versioned test entry with all version-specific values substituted.
@@ -123,6 +124,7 @@ make update
 ```
 
 This regenerates:
+
 - Prow job configs in `ci-operator/jobs/`
 - `zz_generated_metadata` sections
 - Other downstream artifacts
@@ -130,6 +132,7 @@ This regenerates:
 ## File Layout
 
 CI config files live in:
+
 ```
 ci-operator/config/redhat-developer/rhdh/
 ├── redhat-developer-rhdh-main.yaml
@@ -138,6 +141,7 @@ ci-operator/config/redhat-developer/rhdh/
 ```
 
 Generated Prow jobs go to:
+
 ```
 ci-operator/jobs/redhat-developer/rhdh/
 ├── redhat-developer-rhdh-main-presubmits.yaml

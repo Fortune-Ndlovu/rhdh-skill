@@ -12,6 +12,7 @@ List and manage OCP Hive ClusterPool configurations for RHDH in the `openshift/r
 ## When to Use
 
 Use this skill when you need to:
+
 - List current RHDH cluster pools and their OCP versions
 - Generate a new cluster pool YAML for a new OCP version
 - Review cluster pool capacity (size, maxSize, runningCount)
@@ -19,7 +20,7 @@ Use this skill when you need to:
 
 ## Prerequisites
 
-- `yq` (v4+) must be available for YAML parsing
+- Python 3.9+
 - For listing: works from any directory (auto-detects local checkout or uses GitHub API)
 - For generating: requires a local `openshift/release` checkout (writes files)
 
@@ -28,13 +29,13 @@ Use this skill when you need to:
 Run the bundled script (works from any directory):
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-cluster-pools.sh"
+uv run "${SKILL_DIR}/scripts/list_cluster_pools.py"
 ```
 
 ### Override repo location
 
 ```bash
-bash "${SKILL_DIR}/scripts/list-cluster-pools.sh" --repo-dir /path/to/openshift/release
+uv run "${SKILL_DIR}/scripts/list_cluster_pools.py" --repo-dir /path/to/openshift/release
 ```
 
 ### Output format
@@ -56,19 +57,19 @@ The script outputs a table with columns:
 Use the bundled generation script:
 
 ```bash
-bash "${SKILL_DIR}/scripts/generate-cluster-pool.sh" --version 4.22
+uv run "${SKILL_DIR}/scripts/generate_cluster_pool.py" --version 4.22
 ```
 
 ### With a specific reference pool
 
 ```bash
-bash "${SKILL_DIR}/scripts/generate-cluster-pool.sh" --version 4.22 --reference 4.21
+uv run "${SKILL_DIR}/scripts/generate_cluster_pool.py" --version 4.22 --reference 4.21
 ```
 
 ### Preview without writing (dry-run)
 
 ```bash
-bash "${SKILL_DIR}/scripts/generate-cluster-pool.sh" --version 4.22 --dry-run
+uv run "${SKILL_DIR}/scripts/generate_cluster_pool.py" --version 4.22 --dry-run
 ```
 
 ### What the script does
@@ -96,6 +97,7 @@ To remove a cluster pool for an end-of-life OCP version:
 ## File Layout
 
 All cluster pool files live in:
+
 ```
 clusters/hosted-mgmt/hive/pools/rhdh/
 ├── OWNERS

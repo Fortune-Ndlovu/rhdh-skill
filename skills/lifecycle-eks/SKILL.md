@@ -19,7 +19,7 @@ description: >-
 
 ## Prerequisites
 
-- `curl`, `jq`, `yq` (v4+), `awk`, internet connectivity
+- Python 3.9+, internet connectivity
 - For configured version display: local `openshift/release` checkout or `gh` CLI
 
 ## Steps
@@ -27,7 +27,7 @@ description: >-
 1. Run the lifecycle check script:
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-eks-lifecycle.sh" \
+uv run "${SKILL_DIR}/scripts/check_eks_lifecycle.py" \
   --mapt-ref ci-operator/step-registry/redhat-developer/rhdh/eks/mapt/create/redhat-developer-rhdh-eks-mapt-create-ref.yaml \
   --test-pattern "^e2e-eks-"
 ```
@@ -35,6 +35,7 @@ bash "${SKILL_DIR}/scripts/check-eks-lifecycle.sh" \
 The script auto-detects whether you're in an `openshift/release` checkout or uses the GitHub API for remote access. Override with `--repo-dir <path>`.
 
 The script queries two sources:
+
 - **Primary**: `awsdocs/amazon-eks-user-guide` raw AsciiDoc on GitHub -- official AWS EKS docs source with standard/extended support status and release calendar
 - **Cross-verify**: `https://endoflife.date/api/amazon-eks.json` -- community-maintained EOL dates
 

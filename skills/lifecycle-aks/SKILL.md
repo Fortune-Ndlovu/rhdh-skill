@@ -18,7 +18,7 @@ description: >-
 
 ## Prerequisites
 
-- `curl`, `jq`, `yq` (v4+), internet connectivity
+- Python 3.9+, internet connectivity
 - For configured version display: local `openshift/release` checkout or `gh` CLI
 
 ## Steps
@@ -26,7 +26,7 @@ description: >-
 1. Run the lifecycle check script:
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-aks-lifecycle.sh" \
+uv run "${SKILL_DIR}/scripts/check_aks_lifecycle.py" \
   --mapt-ref ci-operator/step-registry/redhat-developer/rhdh/aks/mapt/create/redhat-developer-rhdh-aks-mapt-create-ref.yaml \
   --test-pattern "^e2e-aks-"
 ```
@@ -34,6 +34,7 @@ bash "${SKILL_DIR}/scripts/check-aks-lifecycle.sh" \
 The script auto-detects whether you're in an `openshift/release` checkout or uses the GitHub API for remote access. Override with `--repo-dir <path>`.
 
 The script queries two sources:
+
 - **Primary**: `https://releases.aks.azure.com/parsed_data.json` -- official AKS release status with per-region K8s version availability (major.minor only)
 - **Cross-verify**: `https://endoflife.date/api/azure-kubernetes-service.json` -- community-maintained EOL dates
 
