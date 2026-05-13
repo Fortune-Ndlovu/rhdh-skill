@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.9"
+# dependencies = []
+# ///
 """Check GKE Kubernetes version lifecycle using endoflife.date API.
 
 Primary source: https://endoflife.date/api/google-kubernetes-engine.json

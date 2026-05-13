@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.9"
+# dependencies = []
+# ///
 """Check OCP and RHDH lifecycle status using the Red Hat Product Life Cycles API.
 
 Outputs human-readable tables to stdout and a JSON summary to stderr.
