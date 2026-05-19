@@ -54,28 +54,6 @@ def fetch_components(token: str, project: str) -> list[str]:
     return sorted(c["name"] for c in data)
 
 
-def parse_fields_md(fields_path: Path) -> set[str]:
-    """Extract component names from the Component Catalog tables in fields.md."""
-    text = fields_path.read_text(encoding="utf-8")
-    components = set()
-    # Match table rows: | ComponentName | Description | ... |
-    # Skip header rows (contain "Component" or "---")
-    for line in text.splitlines():
-        if not line.startswith("|"):
-            continue
-        cells = [c.strip() for c in line.split("|")]
-        # cells[0] is empty (before first |), cells[1] is the component name
-        if len(cells) < 3:
-            continue
-        name = cells[1]
-        if not name or name == "Component" or name.startswith("---"):
-            continue
-        # Skip non-component table rows (from other tables in fields.md)
-        # Component tables come after "### Component Catalog"
-        components.add(name)
-    return components
-
-
 def parse_component_section(fields_path: Path) -> set[str]:
     """Extract only components from the Component Catalog section."""
     text = fields_path.read_text(encoding="utf-8")
