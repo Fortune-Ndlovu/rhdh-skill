@@ -465,7 +465,7 @@ Examples:
         help="List available image tags from quay.io. Use --image-repo to specify the repo.",
     )
 
-    overrides = parser.add_argument_group("RHDH job overrides (ignored for overlay jobs)")
+    overrides = parser.add_argument_group("RHDH job overrides (not supported for overlay jobs)")
     overrides.add_argument(
         "-I",
         "--image-registry",
