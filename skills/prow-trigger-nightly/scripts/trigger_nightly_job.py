@@ -568,7 +568,6 @@ def main(argv: list[str] | None = None) -> None:
     )
     kubeconfig = os.path.join(config_home, "openshift-ci", "kubeconfig")
     os.makedirs(os.path.dirname(kubeconfig), exist_ok=True)
-    os.environ["KUBECONFIG"] = kubeconfig
 
     args = parse_args(argv)
     validate_args(args)
