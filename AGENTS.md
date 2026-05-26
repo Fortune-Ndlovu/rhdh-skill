@@ -74,6 +74,12 @@ Single version (`0.2.0`) kept in sync across three files:
 
 Bump all three when releasing.
 
+## Shared modules (lifecycle ↔ prow)
+
+`skills/prow/scripts/rhdh_prow/repo.py` and `skills/prow/scripts/rhdh_prow/yaml.py` are copies of `skills/lifecycle/scripts/rhdh_lifecycle/repo.py` and `skills/lifecycle/scripts/rhdh_lifecycle/yaml.py`. The only difference is the internal import path (`rhdh_prow.repo` vs `rhdh_lifecycle.repo`). When modifying either copy, update both to keep them in sync.
+
+`skills/prow/scripts/rhdh_prow/utils.py` is a subset of `skills/lifecycle/scripts/rhdh_lifecycle/utils.py`. When modifying either copy, update both to keep them in sync.
+
 ## Agent skills
 
 ### Issue tracker
