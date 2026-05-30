@@ -6,8 +6,11 @@ Check out a PR's chart changes, validate locally, deploy the full chart to a run
 
 Read these reference files before starting:
 
-1. `../references/chart-pr-testing.md` — Chart CI behavior, local validation, deployment commands
-2. `../../rhdh/references/github-reference.md` — gh CLI patterns
+1. `../references/shared-pr-fetch.md` — Shared Phase 1 (PR context fetching)
+2. `../references/shared-verification.md` — Shared Phase 6 (active verification)
+3. `../references/shared-findings-structure.md` — Shared Phase 7 (findings structure)
+4. `../references/chart-pr-testing.md` — Chart CI behavior, local validation, deployment commands
+5. `../../rhdh/references/github-reference.md` — gh CLI patterns
 
 </required_reading>
 
@@ -29,26 +32,9 @@ Read these reference files before starting:
 ```bash
 REPO="redhat-developer/rhdh-chart"
 PR_NUMBER=<number>
-
-gh pr view $PR_NUMBER --repo $REPO \
-  --json number,title,state,author,body,files,createdAt,headRefOid,baseRefName
 ```
 
-Validate:
-- PR state is `OPEN` (warn if merged or closed — branch may be deleted)
-- PR belongs to `redhat-developer/rhdh-chart`
-
-Fetch the diff for later checklist generation:
-
-```bash
-gh pr diff $PR_NUMBER --repo $REPO
-```
-
-Save the changed file list for Phase 5:
-
-```bash
-gh pr view $PR_NUMBER --repo $REPO --json files --jq '.files[].path'
-```
+Read `../references/shared-pr-fetch.md` and follow the `<fetch_pr>` instructions using the `REPO` and `PR_NUMBER` variables above.
 
 ---
 
@@ -365,59 +351,17 @@ When done testing, rollback the chart:
 
 ## Phase 6: Active Verification
 
-**This phase verifies the PR's specific chart changes on the cluster — not generic health checks.** The goal is to exercise the exact template/values changes the PR introduced and capture evidence that they work as intended.
+Typical chart verification actions: apply values overrides, check rendered resources, curl endpoints, verify ConfigMap data, test toggle behavior (enabled/disabled), check network policies.
 
-### 6.1 Analyze the diff
-
-Read the diff hunks from Phase 1. For each changed file, understand:
-
-- What the template/values did **before** the change
-- What it does **after**
-- What behavioral difference this introduces on a running cluster
-
-Map each change to a concrete cluster-observable effect — something you can trigger and measure. Examples:
-
-- Template adds a new ConfigMap → verify it exists with correct data
-- Values add a new toggle → verify it takes effect when enabled/disabled
-- Network policy change → verify connectivity is correct
-- Route/Ingress change → verify access works from expected paths
-
-If a change has no cluster-observable effect (e.g., helm-docs comment update, CI config change), state that explicitly.
-
-### 6.2 Propose a verification plan
-
-Present the plan to the user. For each test, specify:
-
-- **What to do**: the exact cluster action (apply values override, check resource, curl endpoint, etc.)
-- **What to observe**: where to look (resource spec, pod env, logs, HTTP response)
-- **Pass criteria**: what output means the change works
-- **Fail criteria**: what output means the change is broken
-
-**STOP. Do not run any verification commands. Present the plan and wait for the user to accept it before proceeding to 6.3.**
-
-### 6.3 Execute the plan
-
-Only after the user accepts the plan:
-
-Run each verification step on the cluster. For every step, capture the actual command output as evidence. Do not summarize — show the raw output so the user can see exactly what happened.
+Read `../references/shared-verification.md` and follow the `<verification_process>` instructions, applying them to the specific chart changes in this PR.
 
 ---
 
 ## Phase 7: Findings & Recommendations
 
-Synthesize the verification results and provide a complete review assessment.
+Read `../references/shared-findings-structure.md` and follow the `<findings_structure>` instructions, using the chart-specific context below.
 
-### 7.1 Verification summary
-
-Summarize what was tested and the results:
-
-| Category | Test performed | Result | Evidence |
-|---|---|---|---|
-| *[category]* | *[what was tested]* | Pass/Fail | *[key observation]* |
-
-### 7.2 Best practice assessment
-
-Review the PR's approach against chart development best practices. Reference `../../rhdh/references/rhdh-repos.md` for chart conventions:
+### Chart best-practice bullets (for 7.2)
 
 - Does the change follow the subchart architecture (upstream values under `upstream:` key)?
 - Are dynamic plugin configurations handled via `global.dynamic.includes` / `global.dynamic.plugins`?
@@ -427,39 +371,16 @@ Review the PR's approach against chart development best practices. Reference `..
 - Is the `_helpers.tpl` used for reusable template logic instead of inline duplication?
 - Are values documented with `# --` comments so helm-docs generates correct README?
 
-### 7.3 Security review
-
-Evaluate the changes from a security perspective:
+### Chart security bullets (for 7.3)
 
 - Are secrets handled safely (no plaintext in values.yaml defaults, proper Secret resources)?
-- Do RBAC templates follow least-privilege principle?
-- Are container image references pinned appropriately?
 - Are new network policies restrictive enough?
 - Do new ServiceAccount configurations avoid unnecessary permissions?
-- Are user-supplied values sanitized before use in resource names or labels?
 
-### 7.4 Improvement suggestions
-
-Based on the findings, suggest concrete improvements if any:
-
-- Template changes needed (reference specific files and lines from the diff)
-- Missing values documentation or schema coverage
-- Test gaps (new template logic without corresponding test in `templates/tests/`)
-- Configuration or operational concerns
-
-### 7.5 Rollback instructions
-
-Present the rollback command recorded in Phase 4.6:
+### Chart rollback commands (for 7.5)
 
 ```bash
 helm rollback $HELM_RELEASE $HELM_REVISION -n $HELM_NS
-```
-
-To fully restore the previous chart version with its exact values:
-
-```bash
-helm rollback $HELM_RELEASE $HELM_REVISION -n $HELM_NS
-# Verify rollback succeeded
 helm history $HELM_RELEASE -n $HELM_NS --max 3
 kubectl rollout status deployment/$RHDH_DEPLOY -n $HELM_NS --timeout=300s
 ```

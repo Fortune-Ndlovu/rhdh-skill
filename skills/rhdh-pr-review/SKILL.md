@@ -75,6 +75,9 @@ See `references/chart-pr-testing.md` for deployment commands.
 
 | Reference | Purpose | Path |
 |-----------|---------|------|
+| shared-pr-fetch | PR context fetching (shared) | `references/shared-pr-fetch.md` |
+| shared-verification | Active verification process (shared) | `references/shared-verification.md` |
+| shared-findings-structure | Findings report structure (shared) | `references/shared-findings-structure.md` |
 | operator-pr-images | CI image extraction and validation (operator) | `references/operator-pr-images.md` |
 | chart-pr-testing | Chart CI behavior, local validation, deployment (chart) | `references/chart-pr-testing.md` |
 | github-reference | gh CLI patterns, PR queries | `../rhdh/references/github-reference.md` (if unavailable, use standard `gh` CLI patterns) |
