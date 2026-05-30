@@ -116,17 +116,18 @@ What would you like to do?
 *For testing PR changes on a live RHDH cluster*
 
 8. **Review operator PR** — Deploy PR operator bundle on cluster and get review checklist
+9. **Review chart PR** — Deploy PR chart on cluster and get review checklist
 
 ### Test Plan Tasks
 
 *For rhdh test plan review in jira*
 
-9. **Review Test Plan content** — Reviews an RHDH test plan Jira ticket and suggests platform/integration version updates based on support lifecycle pages and RHDH release milestones
+10. **Review Test Plan content** — Reviews an RHDH test plan Jira ticket and suggests platform/integration version updates based on support lifecycle pages and RHDH release milestones
 
 ### General Tasks
 
-10. **Check environment** — Run doctor, configure paths
-11. **View/search activity** — Review worklog, todos
+11. **Check environment** — Run doctor, configure paths
+12. **View/search activity** — Review worklog, todos
 
 **Wait for response before proceeding.**
 </intake>
@@ -168,7 +169,7 @@ What would you like to do?
 
 | Response | Skill |
 |----------|-------|
-| 8, "review PR", "rhdh-pr-review", "test PR", "operator PR", "swap image" | Route to `@rhdh-pr-review` skill |
+| 8, 9, "review PR", "rhdh-pr-review", "test PR", "operator PR", "chart PR", "helm chart PR", "swap image" | Route to `@rhdh-pr-review` skill |
 
 **To route:** Read `../rhdh-pr-review/SKILL.md` and follow its intake process.
 
@@ -176,7 +177,7 @@ What would you like to do?
 
 | Response | Skill |
 |----------|-------|
-| 9, "review test plan", "update test plan", "check platform versions in test plan", "review RHDH test plan" | Route to `@rhdh-test-plan-review` skill |
+| 10, "review test plan", "update test plan", "check platform versions in test plan", "review RHDH test plan" | Route to `@rhdh-test-plan-review` skill |
 
 **To route:** Read `../rhdh-test-plan-review/SKILL.md` and follow its intake process.
 
@@ -184,8 +185,8 @@ What would you like to do?
 
 | Response | Action |
 |----------|--------|
-| 10, "doctor", "setup", "config" | Use CLI commands below |
-| 11, "log", "todo", "activity" | Use tracking commands below |
+| 11, "doctor", "setup", "config" | Use CLI commands below |
+| 12, "log", "todo", "activity" | Use tracking commands below |
 
 </routing>
 

@@ -1,6 +1,6 @@
 ---
 name: rhdh-pr-review
-description: Test PR changes on a live RHDH cluster. Fetches CI-built images from PR comments, checks cluster status (deploying if needed), deploys the full PR operator bundle or manifests (not just image swap), actively verifies the code changes by exercising affected code paths on the cluster, and closes with findings including best-practice and security assessment. Use when asked to review an rhdh-operator PR, test PR changes on a cluster, deploy PR images for testing, or deploy PR bundle. Also use when user mentions "operator PR", "review PR", or "test this PR on my cluster". Currently supports rhdh-operator PRs.
+description: Test PR changes on a live RHDH cluster. Fetches CI-built images or checks out chart branches, checks cluster status (deploying if needed), deploys the full PR operator bundle/manifests or Helm chart, actively verifies the code changes by exercising affected code paths on the cluster, and closes with findings including best-practice and security assessment. Use when asked to review an rhdh-operator PR, rhdh-chart PR, test PR changes on a cluster, deploy PR images for testing, or deploy PR bundle. Also use when user mentions "operator PR", "chart PR", "helm chart PR", "review PR", or "test this PR on my cluster".
 ---
 
 <cli_setup>
@@ -34,6 +34,13 @@ For non-OLM installs, fetch and apply the PR branch's `install.yaml` (CRDs, RBAC
 Both paths preserve existing Backstage CRs, config, and Keycloak state — only the operator-side resources are replaced.
 </principle>
 
+<principle name="deploy_full_chart">
+Deploy the full chart from the PR branch, not just a values override.
+PR changes to templates, helpers, schema, or dependencies are baked into the chart itself — a values-only change would miss them.
+Use `helm upgrade` pointing at the local chart directory from the PR branch with `--reuse-values` to preserve existing user configuration.
+See `references/chart-pr-testing.md` for deployment commands.
+</principle>
+
 </essential_principles>
 
 <intake>
@@ -45,6 +52,7 @@ Both paths preserve existing Backstage CRs, config, and Keycloak state — only 
 *For testing PR changes on a live RHDH cluster*
 
 1. **Review rhdh-operator PR** — Deploy PR operator bundle on cluster and get review checklist
+2. **Review rhdh-chart PR** — Deploy PR chart on cluster and get review checklist
 
 **Wait for response before proceeding.**
 
@@ -56,9 +64,10 @@ Both paths preserve existing Backstage CRs, config, and Keycloak state — only 
 
 | Response | Workflow |
 |----------|----------|
-| 1, "operator", "rhdh-operator", a PR number, "review" | Route to `workflows/review-operator-pr.md` |
+| 1, "operator", "rhdh-operator", a PR number + operator context | Route to `workflows/review-operator-pr.md` |
+| 2, "chart", "rhdh-chart", "helm", a PR number + chart context | Route to `workflows/review-chart-pr.md` |
 
-**To route:** Read `workflows/review-operator-pr.md` and follow its process.
+**To route:** Read the corresponding workflow file and follow its process.
 
 </routing>
 
@@ -66,7 +75,8 @@ Both paths preserve existing Backstage CRs, config, and Keycloak state — only 
 
 | Reference | Purpose | Path |
 |-----------|---------|------|
-| operator-pr-images | CI image extraction and validation | `references/operator-pr-images.md` |
+| operator-pr-images | CI image extraction and validation (operator) | `references/operator-pr-images.md` |
+| chart-pr-testing | Chart CI behavior, local validation, deployment (chart) | `references/chart-pr-testing.md` |
 | github-reference | gh CLI patterns, PR queries | `../rhdh/references/github-reference.md` (if unavailable, use standard `gh` CLI patterns) |
 | rhdh-repos | RHDH ecosystem repository map | `../rhdh/references/rhdh-repos.md` (if unavailable, see CONTEXT.md for repo list) |
 
@@ -82,6 +92,8 @@ Both paths preserve existing Backstage CRs, config, and Keycloak state — only 
 
 <success_criteria>
 
-See `workflows/review-operator-pr.md` `<success_criteria>` for the full checklist.
+See the corresponding workflow's `<success_criteria>` for the full checklist:
+- Operator PRs: `workflows/review-operator-pr.md`
+- Chart PRs: `workflows/review-chart-pr.md`
 
 </success_criteria>
