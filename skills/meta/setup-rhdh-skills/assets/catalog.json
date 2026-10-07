@@ -244,7 +244,8 @@
       "category": "ci",
       "invocation": "model",
       "requiresSkills": [
-        "mutation-gate"
+        "mutation-gate",
+        "rhdh-pr-mr"
       ],
       "requiresExternalSkills": []
     },
@@ -253,7 +254,8 @@
       "category": "ci",
       "invocation": "model",
       "requiresSkills": [
-        "mutation-gate"
+        "mutation-gate",
+        "rhdh-pr-mr"
       ],
       "requiresExternalSkills": []
     },
@@ -293,10 +295,22 @@
       "requiresExternalSkills": []
     },
     {
+      "name": "rhdh-pr-mr",
+      "category": "ci",
+      "invocation": "model",
+      "requiresSkills": [
+        "mutation-gate",
+        "rhdh-jira-link"
+      ],
+      "requiresExternalSkills": []
+    },
+    {
       "name": "rhdh-yarn-bump",
       "category": "ci",
       "invocation": "model",
-      "requiresSkills": [],
+      "requiresSkills": [
+        "rhdh-pr-mr"
+      ],
       "requiresExternalSkills": []
     },
     {
