@@ -68,15 +68,6 @@
       "requiresExternalSkills": []
     },
     {
-      "name": "rhdh-prepare-refinement",
-      "category": "jira",
-      "invocation": "model",
-      "requiresSkills": [
-        "rhdh-jira-api"
-      ],
-      "requiresExternalSkills": []
-    },
-    {
       "name": "rhdh-jira-sprint-plan",
       "category": "jira",
       "invocation": "model",
@@ -102,6 +93,15 @@
         "rhdh-jira-api",
         "mutation-gate",
         "prose-editing"
+      ],
+      "requiresExternalSkills": []
+    },
+    {
+      "name": "rhdh-prepare-refinement",
+      "category": "jira",
+      "invocation": "model",
+      "requiresSkills": [
+        "rhdh-jira-api"
       ],
       "requiresExternalSkills": []
     },
